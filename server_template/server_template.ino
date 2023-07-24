@@ -30,80 +30,8 @@ const char* ssid = "YOUR_SSID";
 const char* password = "YOUR_PASSW";
 ESP8266WebServer server;
 
-const int d0Led = 16;
-
-const int d5in1 = 14;
-const int d6in2 = 12;
-const int d7in3 = 13;
-const int d8in4 = 15;
-const int d4enAandB = 2;
-
-void ledOn() {
-  digitalWrite(d0Led, HIGH);
-  server.send(200);
-}
-
-void ledOff() {
-  digitalWrite(d0Led, LOW);
-  server.send(200);
-}
-
-void forward() {
-  digitalWrite(d5in1, HIGH);
-  digitalWrite(d6in2, LOW);
-  digitalWrite(d7in3, HIGH);
-  digitalWrite(d8in4, LOW);
-  server.send(200);
-}
-
-void back() {
-  digitalWrite(d5in1, 0);
-  digitalWrite(d6in2, 1);
-  digitalWrite(d7in3, 0);
-  digitalWrite(d8in4, 1);
-  server.send(200);
-}
-
-void left() {
-  digitalWrite(d5in1, HIGH);
-  digitalWrite(d6in2, LOW);
-  digitalWrite(d7in3, LOW);
-  digitalWrite(d8in4, HIGH);
-  server.send(200);
-}
-
-void right() {
-  digitalWrite(d5in1, LOW);
-  digitalWrite(d6in2, HIGH);
-  digitalWrite(d7in3, HIGH);
-  digitalWrite(d8in4, LOW);
-  server.send(200);
-}
-
-void stop() {
-  digitalWrite(d5in1, HIGH);
-  digitalWrite(d6in2, HIGH);
-  digitalWrite(d7in3, HIGH);
-  digitalWrite(d8in4, HIGH);
-  server.send(200);
-}
-
-void pwmVel() {
-  String duty = server.arg("duty");
-  Serial.println(duty);
-  analogWrite(d4enAandB, duty.toInt());
-  server.send(200);
-}
-
 void setup() {
   Serial.begin(9600);
-
-  pinMode(d0Led, OUTPUT);
-
-  pinMode(d5in1, OUTPUT);
-  pinMode(d6in2, OUTPUT);
-  pinMode(d7in3, OUTPUT);
-  pinMode(d8in4, OUTPUT);
 
   WiFi.begin(ssid, password);
 
@@ -116,24 +44,6 @@ void setup() {
     Serial.print(".");
   }
   Serial.println(WiFi.localIP());
-
-  // root
-  server.on("/", []() {
-    server.send(200, "text/html", myHTML);
-  });
-
-  // led
-  server.on("/led/true", ledOn);
-  server.on("/led/false", ledOff);
-
-  // robot
-  server.on("/forward", forward);
-  server.on("/left", left);
-  server.on("/right", right);
-  server.on("/back", back);
-  server.on("/stop", stop);
-  server.on("/params", pwmVel);
-  server.begin();
 }
 
 void loop() {
